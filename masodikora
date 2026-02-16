@@ -1,0 +1,72 @@
+#include "graphics.hpp"
+#include <vector>
+#include <iostream>
+
+using namespace genv;
+using namespace std;
+const int XX = 800;
+const int YY = 600;
+
+/*
+struct pihe{
+    int x, y;
+
+};
+*/
+
+struct pihe{
+    int x, y;
+    void mozog(int szel){
+          if (y > YY) y=0;
+            if (x < 0) x=XX-1;
+            if (x > XX) x=0;
+            x+=rand()%5-2+szel;
+            y+=rand()%5-1;
+    }
+};
+
+int main(){
+    vector<pihe> v;
+    for (int i=0;i<2000;i++){
+        pihe p;
+        p.x=rand()%XX;
+        p.y=rand()%YY;
+        v.push_back(p);
+    }
+    gout.open(XX,YY);
+    gout << font("LiberationSans-Regular.ttf",20);
+    gout << refresh;
+    event ev;
+    gout << color(255,255,255);
+    gin.timer(5);
+    int szel = 0;
+    while(gin >> ev && ev.keycode !=key_escape){
+            if(ev.type == ev_mouse){
+
+                 cout << ev.pos_x << flush;
+                 szel = (ev.pos_x - XX/2)/200;
+            }
+        if(ev.type == ev_timer){
+
+        gout << move_to(0,0) << color(0,0,0) << box(XX,YY) << color(255,255,255);
+        for (pihe &p : v){
+            if (p.y > YY) p.y=0;
+            if (p.x < 0) p.x=XX-1;
+            if (p.x > XX) p.x=0;
+            p.x+=rand()%5-2+szel;
+            p.y+=rand()%5-1;
+            gout << move_to(p.x, p.y++) << box(2,2);
+
+        }
+        gout << refresh;
+    }
+    if  (ev.keycode == ' '){
+        for (int i=0;i<2000;i++){
+        pihe p;
+        p.x=rand()%XX;
+        p.y=0;
+        v.push_back(p);
+    }
+    }
+    }
+}
